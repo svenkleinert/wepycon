@@ -24,12 +24,12 @@ setuptools.setup(
         "numpy>=1.21.0",
         "matplotlib>=3.4.0",
         "pyvisa-py>=0.5.0",
-        "git+https://github.com/python-zwoasi/python-zwoasi#egg=python-zwoasi-0.1.0",
-
+        "zwoasi@git+https://github.com/python-zwoasi/python-zwoasi.git#egg=zwoasi",
     ],
     entry_points={
         "console_scripts":[ "wePycon = wepycon.main:main" ]
     },
 
     python_requires='>=3.6',
+    package_data={"wepycon":["lib/*/*"]},
 )
