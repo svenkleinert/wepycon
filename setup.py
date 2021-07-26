@@ -23,6 +23,7 @@ setuptools.setup(
         "PyQt5>=5.12.3",
         "numpy>=1.21.0",
         "matplotlib>=3.4.0",
+        "v4l2py>=0.6.0",
         "zwoasi@git+https://github.com/python-zwoasi/python-zwoasi.git#egg=zwoasi",
     ],
     entry_points={
