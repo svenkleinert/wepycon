@@ -22,6 +22,7 @@ asi.init(lib_filename)
 
 class ZwoAsiCamera(AbstractCamera):
     def __init__(self, camera_id):
+        self.id = camera_id
         self.device = asi.Camera(camera_id)
         
         controls = self.device.get_controls()

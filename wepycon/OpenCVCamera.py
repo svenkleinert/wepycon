@@ -4,9 +4,9 @@ import sys
 
 from .AbstractCamera import AbstractCamera
 
-
 class OpenCVCamera(AbstractCamera):
     def __init__(self, camera_id, px_size=1, resolutions=None):
+        self.id = camera_id
         if sys.platform == "win32":
             self.device = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
         else:

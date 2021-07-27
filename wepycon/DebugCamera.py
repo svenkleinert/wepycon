@@ -4,6 +4,7 @@ import numpy as np
 
 class DebugCamera(AbstractCamera):
     def __init__(self, *args, **kwargs):
+        self.id = 0
         print("[DebugCamera].__init__()")
         self.controls_available = {
             "Exposure": [int, [-9, -1, -2], 0],
