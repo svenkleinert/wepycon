@@ -137,4 +137,4 @@ class ZwoAsiCamera(AbstractCamera):
             assert name in self._settings.keys()
             self._settings[name] = settings[name]
             _type, _, _id = self.controls_available[name]
-            self.device.set_control(_id, _type(value))
+            self.device.set_control_value(_id, _type(value))
