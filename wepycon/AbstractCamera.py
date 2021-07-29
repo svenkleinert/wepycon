@@ -11,6 +11,6 @@ class AbstractCamera(ABC):
     def from_device_dialog(cls):
         raise NotImplementedError("from_device_dialog")
 
-    def apply_settings(self, settings):
-        raise NotImplementedError("apply_settings")
-    
+    @property
+    def settings(self):
+        raise NotImplementedError("settings")

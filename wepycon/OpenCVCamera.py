@@ -61,6 +61,12 @@ class OpenCVCamera(AbstractCamera):
         if available:
             self.controls_available["Auto Exposure"] = [bool, False, cv2.CAP_PROP_AUTO_EXPOSURE]
 
+        self._settings = {}
+        for name in self.controls_available.keys():
+            if self.controls_available[name][0] == int:
+                self._settings[name] = self.controls_available[name][1][-1]
+            elif self.controls_available[name][0] == bool:
+                self._settings[name] = self.controls_available[name][1]
         
         available = self.device.set(cv2.CAP_PROP_AUTO_WB, 0)
         
@@ -140,10 +146,6 @@ class OpenCVCamera(AbstractCamera):
 
         return supported_resolutions
 
-
-
-
-
     @classmethod
     def list_devices(cls):
         if sys.platform == "win32":
@@ -171,8 +173,16 @@ class OpenCVCamera(AbstractCamera):
     def from_device_number(cls, num, px_size=1, resolutions=None):
         return cls(num, px_size, resolutions)
 
-    def apply_settings( self, settings ):
+    @property
+    def settings(self):
+        return self._settings
+
+    @settings.setter
+    def settings(self, settings):
         for name, value in settings.items():
+            assert name in self._settings.keys()
+            self._settings[name] = settings[name]
+
             _type, _, _id = self.controls_available[name]
             if _id is not None:
                 self.device.set(_id, float(value))
@@ -181,8 +191,6 @@ class OpenCVCamera(AbstractCamera):
                 self.device.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolutions[value][1])
                 self.width = self.device.get(cv2.CAP_PROP_FRAME_WIDTH)
                 self.height = self.device.get(cv2.CAP_PROP_FRAME_HEIGHT)
-
-
 
 def scan_camera_linux_v4l2():
     import os

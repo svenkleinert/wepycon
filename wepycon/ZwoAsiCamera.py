@@ -61,9 +61,14 @@ class ZwoAsiCamera(AbstractCamera):
         else:
             self.device.set_control_value( asi.ASI_HIGH_SPEED_MODE, 1 )
             self.controls_available["HighSpeedMode"] = [bool, True, asi.ASI_HIGH_SPEED_MODE]
-        #self.device.set_control_value( self.controls_available["HighSpeedMode"][2], True)
-        #print( self.device.get_control_value( self.controls_available["HighSpeedMode"][2] ) )
-        #print( self.device.get_controls() )
+        
+        self._settings = {}
+        for name in self.controls_available.keys():
+            if self.controls_available[name][0] == int:
+                self._settings[name] = self.controls_available[name][1][-1]
+            elif self.controls_available[name][0] == bool:
+                self._settings[name] = self.controls_available[name][1]
+
     @property
     def video_mode(self):
         return self._video_mode
@@ -121,8 +126,15 @@ class ZwoAsiCamera(AbstractCamera):
     @classmethod
     def from_device_number(cls, num):
         return cls(num)
-    def apply_settings( self, settings ):
+    
+    @property
+    def settings(self):
+        return self._settings
+
+    @settings.setter
+    def settings(self, settings):
         for name, value in settings.items():
+            assert name in self._settings.keys()
+            self._settings[name] = settings[name]
             _type, _, _id = self.controls_available[name]
             self.device.set_control(_id, _type(value))
-

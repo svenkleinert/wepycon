@@ -165,7 +165,7 @@ class CameraWidget(QWidget):
                 settings[_name] = widget.isChecked()
             elif isinstance(widget, QComboBox):
                 settings[_name] = widget.currentIndex()
-        self.camera.apply_settings(settings)
+        self.camera.settings = settings
 
         if was_running:
             self.is_running = True

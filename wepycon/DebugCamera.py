@@ -14,6 +14,14 @@ class DebugCamera(AbstractCamera):
             "Contrast": [int, [0, 100, 40], 4],
             "AutoExposure": [bool, False, 5]
                 }
+
+        self._settings = {}
+        for name in self.controls_available.keys():
+            if self.controls_available[name][0] == int:
+                self._settings[name] = self.controls_available[name][1][-1]
+            elif self.controls_available[name][0] == bool:
+                self._settings[name] = self.controls_available[name][1]
+            
         self.width = 640
         self.height = 480
         self.adc_bits = 8
@@ -29,8 +37,17 @@ class DebugCamera(AbstractCamera):
         img += np.random.random_integers(0, int(255*noise), (self.height, self.width))
         return img.astype(int)
 
-    def apply_settings(self, settings, *args, **kwargs):
-        print("[DebugCamera].apply_settings()")
+    @property
+    def settings(self):
+        print("[DebugCamera].settings - getter")
+        return self._settings
+
+    @settings.setter
+    def settings(self, settings):
+        print("[DebugCamera].settings - setter")
+        for key in settings.keys():
+            assert key in self._settings.keys()
+            self._settings[key] = settings[key]
 
     @classmethod
     def from_device_dialog(cls):
