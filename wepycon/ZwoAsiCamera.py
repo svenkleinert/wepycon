@@ -42,10 +42,10 @@ class ZwoAsiCamera(AbstractCamera):
 
         if "HighSpeedMode" in self.controls_available:
             _, (_, _, _default), _id = self.controls_available["HighSpeedMode"]
-            self.controls_available["HighSpeedMode"] = [bool, bool(_default ), _id]
+            self.controls_available["HighSpeedMode"] = [bool, bool(_default), _id]
         if "HardwareBin" in self.controls_available:
             _, (_, _, _default), _id = self.controls_available["HardwareBin"]
-            self.controls_available["HardwareBin"] = [bool, bool(_default ), _id]
+            self.controls_available["HardwareBin"] = [bool, bool(_default), _id]
 
         self._video_mode = False
         self._adc_bits = 8
@@ -61,6 +61,9 @@ class ZwoAsiCamera(AbstractCamera):
         else:
             self.device.set_control_value( asi.ASI_HIGH_SPEED_MODE, 1 )
             self.controls_available["HighSpeedMode"] = [bool, True, asi.ASI_HIGH_SPEED_MODE]
+        
+        self.controls_available["VideoMode"] = [bool, True, None]
+        self.video_mode = True
         
         self._settings = {}
         for name in self.controls_available.keys():
@@ -137,4 +140,7 @@ class ZwoAsiCamera(AbstractCamera):
             assert name in self._settings.keys()
             self._settings[name] = settings[name]
             _type, _, _id = self.controls_available[name]
-            self.device.set_control_value(_id, _type(value))
+            if _id is not None:
+                self.device.set_control_value(_id, _type(value))
+            elif name == "VideoMode":
+                self.video_mode = _type(value)
