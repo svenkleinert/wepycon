@@ -64,6 +64,8 @@ class ZwoAsiCamera(AbstractCamera):
         
         self.controls_available["VideoMode"] = [bool, True, None]
         self.video_mode = True
+
+        self.controls_available["ADCbits"] = [list, ([8, 16], 1), None]
         
         self._settings = {}
         for name in self.controls_available.keys():
@@ -144,3 +146,5 @@ class ZwoAsiCamera(AbstractCamera):
                 self.device.set_control_value(_id, _type(value))
             elif name == "VideoMode":
                 self.video_mode = _type(value)
+            elif name == "ADCbits":
+                self.adc_bits = int(value)
