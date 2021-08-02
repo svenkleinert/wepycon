@@ -28,8 +28,10 @@ class ZwoAsiCamera(AbstractCamera):
         controls = self.device.get_controls()
 
         # min bandwidth for stable connection
-        min_bw = controls["BandWidth"]["MaxValue"]
-        self.device.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, min_bw)
+        if "BandWidth" in controls.keys():
+            max_bw = controls["BandWidth"]["MaxValue"]
+            self.device.set_control_value(asi.ASI_BANDWIDTHOVERLOAD, max_bw, auto=True)
+            del controls["BandWidth"]
 
         self.controls_available = {}
         for key, value in controls.items():
