@@ -1,0 +1,6 @@
+opencv-python>=4.5
+matplotlib>=3.4.0
+numpy>=1.21.0
+PyQt5>=5.15.0
+v4l2py>=0.6.0
+-e git+https://github.com/python-zwoasi/python-zwoasi.git#egg=python-zwoasi
