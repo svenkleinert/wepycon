@@ -1,4 +1,4 @@
-from . import QWidget, QLabel, QVBoxLayout, QPushButton, Slot, QHBoxLayout, QFormLayout, QComboBox, QSpinBox, QCheckBox, QGridLayout, QSizePolicy
+from . import QWidget, QLabel, QVBoxLayout, QPushButton, Slot, QHBoxLayout, QFormLayout, QComboBox, QSpinBox, QCheckBox, QGridLayout, QSizePolicy, QMessageBox
 from .BeamWorker import BeamWorker
 from .MatplotlibWidget import MatplotlibWidget
 from .BeamWidget import BeamWidget
@@ -94,7 +94,12 @@ class CameraWidget(QWidget):
         
         vbox.addLayout(self.gui_form)
         vbox.addSpacing(50)
+        
 
+        self.ultracal_button = QPushButton("Ultracal!")
+        self.ultracal_button.setCheckable(True)
+        self.ultracal_button.clicked.connect(self.on_ultracal_button)
+        vbox.addWidget(self.ultracal_button)
 
         self.button = QPushButton("Start!")
         self.button.clicked.connect(self.on_button)
@@ -120,6 +125,25 @@ class CameraWidget(QWidget):
             self.acquire_image()
         else:
             self.button.setText("Start!")
+
+    @Slot()
+    def on_ultracal_button(self):
+        if not self.ultracal_button.isChecked():
+            self.camera.background = None
+        else:
+            QMessageBox.warning(self, "starting background substraction", "Please block the beam")
+            was_running = self.is_running
+
+            self.is_running = False
+            while self.worker.isRunning():
+                pass
+            
+            self.camera.ultracal()
+            if was_running:
+                self.is_running = True
+                self.acquire_image()
+
+
 
     def acquire_image(self):
         if self.worker.isRunning():

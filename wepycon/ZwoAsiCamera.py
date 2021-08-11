@@ -22,6 +22,7 @@ asi.init(lib_filename)
 
 class ZwoAsiCamera(AbstractCamera):
     def __init__(self, camera_id):
+        super(ZwoAsiCamera, self).__init__()
         self.id = camera_id
         self.device = asi.Camera(camera_id)
         
@@ -112,12 +113,14 @@ class ZwoAsiCamera(AbstractCamera):
             self.video_mode = True
 
 
-    def get_image(self, timeout=600):
+    def get_image(self, substract_background=True, timeout=600):
         try:
             if self._video_mode:
                 img = self.device.capture_video_frame(timeout=timeout)
             else:
                 img = self.device.capture()
+            if substract_background and self.background is not None:
+                return img - self.background
             return img
         except Exception as e:
             print( e )

@@ -6,6 +6,7 @@ from .AbstractCamera import AbstractCamera
 
 class OpenCVCamera(AbstractCamera):
     def __init__(self, camera_id, px_size=1, resolutions=None):
+        super(OpenCVCamera, self).__init__()
         self.id = camera_id
         if sys.platform == "win32":
             self.device = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
@@ -78,13 +79,15 @@ class OpenCVCamera(AbstractCamera):
         self.adc_bits = 8
         self.px_size=px_size
 
-    def get_image(self, timeout=600):
+    def get_image(self, substract_background=True, timeout=600):
         try:
             success, img = self.device.read()
             if success:
                 if img.ndim > 2:
                     img = np.sum(img, axis=2)/3
-                return img.astype(np.int)
+                if substract_background and self.background is not None:
+                    return img.astype(np.int) - self.background
+                return img
         except Exception as e:
             print( e )
         return np.zeros((self.height, self.width))

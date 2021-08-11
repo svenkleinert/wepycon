@@ -4,6 +4,7 @@ import numpy as np
 
 class DebugCamera(AbstractCamera):
     def __init__(self, *args, **kwargs):
+        super(DebugCamera, self).__init__()
         self.id = 0
         print("[DebugCamera].__init__()")
         self.controls_available = {
@@ -27,7 +28,7 @@ class DebugCamera(AbstractCamera):
         self.adc_bits = 8
         self.px_size = 1.0
 
-    def get_image(self, *args, **kwargs):
+    def get_image(self, substract_background=True, *args, **kwargs):
         #print("[DebugCamera].get_image()")
         time.sleep(0.001)
         x = np.arange(self.width)
@@ -35,7 +36,9 @@ class DebugCamera(AbstractCamera):
         noise = 0.1
         img = np.exp( -(x[np.newaxis,:]-self.width/2)**2/2/(self.width/10)**2) * np.exp( -(y[:,np.newaxis]-self.height/2)**2/2/(self.width/10)**2) * int(255 * (1-noise))
         img += np.random.random_integers(0, int(255*noise), (self.height, self.width))
-        return img.astype(int)
+        if substract_background and self.background is not None:
+            return img.astype(int) - self.background
+        return img
 
     @property
     def settings(self):

@@ -19,6 +19,6 @@ class BeamWorker(QThread):
             img[idxs[1],:] = 2**self.camera.adc_bits - 1 
 
         if self.cmap is not None:
-            img = np.take( self.cmap, img, axis=0 )
+            img = np.take(self.cmap, np.clip(img.astype(int), 0, 2**self.camera.adc_bits - 1), axis=0)
 
         self.beam_widget.update_image(img, self.camera.adc_bits)
